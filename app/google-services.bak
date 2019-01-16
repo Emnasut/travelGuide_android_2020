@@ -1,0 +1,86 @@
+{
+  "project_info": {
+    "project_number": "492877121704",
+    "firebase_url": "https://travelguide-20abb.firebaseio.com",
+    "project_id": "travelguide-20abb",
+    "storage_bucket": "travelguide-20abb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:492877121704:android:09546560b4505797",
+        "android_client_info": {
+          "package_name": "com.uguide.travelguide.eastsong"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "492877121704-go635ph50jtjc2o779j57astjcg362tq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBgqqdnUXIwPBgFoHwYCfyVg_Vth3GQ7M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:492877121704:android:20dcdbab9b5e2d32",
+        "android_client_info": {
+          "package_name": "eastsong.digitaltravelguide.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "492877121704-4saskvfjctcdtb7i6pvsc84o45aq99k8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "eastsong.digitaltravelguide.app",
+            "certificate_hash": "2d802a60bfcd4c18c95511595397be1741ca5564"
+          }
+        },
+        {
+          "client_id": "492877121704-go635ph50jtjc2o779j57astjcg362tq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBBgqqdnUXIwPBgFoHwYCfyVg_Vth3GQ7M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "492877121704-go635ph50jtjc2o779j57astjcg362tq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

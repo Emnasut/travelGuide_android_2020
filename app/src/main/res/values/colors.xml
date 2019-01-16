@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="control_background">#cc4285f4</color>
+    <color name="colorPrimary">#16636f</color> <!-- #3f51b5 -->
+    <color name="colorPrimaryDark">#303f9f</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="gray">#808080</color>
+    <color name="background">#e9f2f7</color>
+    <color name="text">#504d4d</color>
+    <color name="headline">#145165</color>
+
+
+</resources>
