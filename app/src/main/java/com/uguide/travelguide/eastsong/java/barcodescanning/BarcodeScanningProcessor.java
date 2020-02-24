@@ -13,13 +13,16 @@
 // limitations under the License.
 package com.uguide.travelguide.eastsong.java.barcodescanning;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -41,9 +44,6 @@ import com.uguide.travelguide.eastsong.java.VisionProcessorBase;
 
 import java.io.IOException;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import static android.app.Activity.RESULT_OK;
 import static com.uguide.travelguide.eastsong.java.LivePreviewActivity.CODE_NOT_FOUND;
@@ -103,13 +103,13 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
 
             if(!barcodes.isEmpty()) {
                 FirebaseVisionBarcode barcode = barcodes.get(0);
-                Log.i(TAG, "found QR code: " + barcode.getRawValue());
+                //Log.i(TAG, "found QR code: " + barcode.getRawValue());
 
                 //for (int i = 0; i < barcodes.size(); ++i) {
                 BarcodeGraphic barcodeGraphic = new BarcodeGraphic(graphicOverlay, barcode);
                 graphicOverlay.add(barcodeGraphic);
 
-                evaluateQRCodeAndOpenMaps(barcode);
+                evaluateQRCodeAndOpenAppropriately(barcode);
                 //}
                 graphicOverlay.postInvalidate();
             } else {
@@ -121,131 +121,123 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
     }
 
     private void openUrl(String url) {
-        final Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(url));
-        activity.startActivity(intent);
+        try {
+            activity.startActivity(new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(url)));
+        } catch (ActivityNotFoundException e) {
+            try {
+                activity.startActivity(new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("http://" + url)));
+            } catch (ActivityNotFoundException e2) {
+                Log.i(TAG, "Unopenable QR found: " + url);
+            }
+        }
 
         Intent returnIntent = new Intent();
         //returnIntent.putExtra("result", result);
         activity.setResult(RESULT_OK, returnIntent);
 
         activity.finish();
+
     }
 
-    private void evaluateQRCodeAndOpenMaps(FirebaseVisionBarcode barcode) {
+    private void evaluateQRCodeAndOpenAppropriately(FirebaseVisionBarcode barcode) {
 
 
         final String barcodeValue = barcode.getRawValue();
 
+        //Log.i(TAG, "Raw QR: " + barcodeValue);
+
         final String code;
 
-        //TODO: simplify somehow
-        if(barcodeValue.toLowerCase().trim().startsWith("http")) {
-            if(barcodeValue.toLowerCase().contains("u-guide.me") || barcodeValue.toLowerCase().contains("gide.me")) {
-                if(barcodeValue.contains("?c=")) {
-                    code = barcodeValue.split("\\?c=")[1];
-                } else {
-                    openUrl(barcodeValue);
-                    return;
-                }
-            } else {
-                openUrl(barcodeValue);
-                return;
-            }
+        if(isTravelGuideUrl(barcodeValue)) {
+            code = barcodeValue.split("\\?c=")[1];
         } else {
-            code = barcodeValue;
+            openUrl(barcodeValue);
+            return;
         }
-
-        Log.i(TAG, "used QR code: " + code);
 
         final FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         final DocumentReference docRef = db.collection("places").document(code);
 
+        docRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+
+
+                    final String type = document.getString("type");
+
+                    if("citymap".equalsIgnoreCase(type)) {
+                        final List<String> cityCodes = (List<String>) document.get("qrcodes");
+
+                        final Intent intent = new Intent(activity, CityListActivity.class);
 
 
 
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
+                        final String[] cityCodesArray = new String[cityCodes.size()];
+                        cityCodes.toArray(cityCodesArray);
+
+                        intent.putExtra("cityCodes", cityCodesArray);
+
+                        intent.putExtra("cityName", (String)document.get("name"));
+
+                        activity.startActivity(intent);
+                        activity.finish();
 
 
-                        final String type = document.getString("type");
-
-                        if("citymap".equalsIgnoreCase(type)) {
-                            final List<String> cityCodes = (List<String>) document.get("qrcodes");
-
-                            final Intent intent = new Intent(activity, CityListActivity.class);
-
-
-
-                            final String[] cityCodesArray = new String[cityCodes.size()];
-                            cityCodes.toArray(cityCodesArray);
-
-                            intent.putExtra("cityCodes", cityCodesArray);
-
-                            intent.putExtra("cityName", (String)document.get("name"));
-
-                            activity.startActivity(intent);
-                            activity.finish();
-
-
-                        } else {
+                    } else {
 //                            final List<GeoPoint> locations = (List<GeoPoint>) document.get("locations");
 
 //                            if(locations != null && !locations.isEmpty()) {
-                                //final GeoPoint latLong = locations.get(0);
+                            //final GeoPoint latLong = locations.get(0);
 
-                                //final String mapsUrl = "https://www.google.com/maps/dir/?api=1&destination=" + latLong.getLatitude() + "," + latLong.getLongitude();
+                            //final String mapsUrl = "https://www.google.com/maps/dir/?api=1&destination=" + latLong.getLatitude() + "," + latLong.getLongitude();
 
-                                //Log.i(TAG, "Target: " + mapsUrl);
+                            //Log.i(TAG, "Target: " + mapsUrl);
 
-                                //Toast.makeText(activity, "Target: " + mapsUrl, Toast.LENGTH_LONG).show(); //never vanishes... ^^ bound to camera somehow? at least vanishes when camera is closed by user...
+                            //Toast.makeText(activity, "Target: " + mapsUrl, Toast.LENGTH_LONG).show(); //never vanishes... ^^ bound to camera somehow? at least vanishes when camera is closed by user...
 
-                                //preview.stop();
+                            //preview.stop();
 //                                final Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(mapsUrl));
 //                                activity.startActivity(intent);
 //                                activity.finish();
 
-                                final CityItem cityItem = new CityItem();
-                                cityItem.setGuid((String)document.getId());
-                                cityItem.setHeadline((String)document.get("name"));
+                            final CityItem cityItem = new CityItem();
+                            cityItem.setGuid((String)document.getId());
+                            cityItem.setHeadline((String)document.get("name"));
 
-                                final Intent intent = new Intent(activity, ItemInformationActivity.class);
-                                intent.putExtras(cityItem.toBundle());
-                                activity.startActivity(intent);
-                                activity.finish();
+                            final Intent intent = new Intent(activity, ItemInformationActivity.class);
+                            intent.putExtras(cityItem.toBundle());
+                            activity.startActivity(intent);
+                            activity.finish();
 
 //                            } else {
 //                                Toast.makeText(activity, "Keine Koordinaten hinterlegt", Toast.LENGTH_LONG).show();
 //                                Log.i(TAG, "No coordinates for location");
 //                            }
-                        }
-
-
-                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
-                        //Toast.makeText(activity, "Data: " + document.getData(), Toast.LENGTH_LONG).show();
-                    } else {
-                        //If code doesn't exist in db
-                        Log.i(TAG, "No such document: " + code);
-
-                        //Toast.makeText(activity, "Code not recognized", Toast.LENGTH_SHORT).show();
-                        //scanning = true;
-
-                        Intent returnIntent = new Intent();
-                        //returnIntent.putExtra("result", result);
-                        activity.setResult(CODE_NOT_FOUND, returnIntent);
-
-                        activity.finish();
-                        return;
-
                     }
+
+
+                    Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                    //Toast.makeText(activity, "Data: " + document.getData(), Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(activity, "Place not found", Toast.LENGTH_LONG).show();
-                    Log.d(TAG, "get failed with ", task.getException());
+                    //If code doesn't exist in db
+                    Log.i(TAG, "No such document: " + code);
+
+                    //Toast.makeText(activity, "Code not recognized", Toast.LENGTH_SHORT).show();
+                    //scanning = true;
+
+                    Intent returnIntent = new Intent();
+                    //returnIntent.putExtra("result", result);
+                    activity.setResult(CODE_NOT_FOUND, returnIntent);
+
+                    activity.finish();
+                    return;
+
                 }
+            } else {
+                Toast.makeText(activity, "Place not found", Toast.LENGTH_LONG).show();
+                Log.d(TAG, "get failed with ", task.getException());
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -253,6 +245,10 @@ public class BarcodeScanningProcessor extends VisionProcessorBase<List<FirebaseV
                 Log.i(TAG, "Fetching doucment failed", e);
             }
         });
+    }
+
+    private boolean isTravelGuideUrl(String barcodeValue) {
+        return (barcodeValue.toLowerCase().contains("u-guide.me") || barcodeValue.toLowerCase().contains("gide.me")) && barcodeValue.contains("?c=") && barcodeValue.split("\\?c=").length > 1;
     }
 
     @Override

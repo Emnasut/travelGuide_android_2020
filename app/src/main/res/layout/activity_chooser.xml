@@ -3,10 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFFFFF"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    >
 
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/toolbarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
@@ -19,40 +22,46 @@
             android:background="@color/colorPrimary"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             android:elevation="4dp"
-            app:title="East Song Digital Travel Guide"
+            app:title="The Travel Guide App《旅游指南 App》"
             />
         <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light"-->
         <!--android:theme="@style/ThemeOverlay.AppCompat.ActionBar"-->
 
+        <!-- 旅遊指南混合掃描儀 --> <!-- Old title -->
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <ImageView
-        android:id="@+id/eastSongLogo"
-        android:layout_width="256dp"
-        android:layout_height="256dp"
-        android:src="@drawable/east_song_logo"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="?attr/actionBarSize"
-        />
+        android:layout_below="@id/toolbarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/app_1st_page__v02_bejan"
+        android:layout_centerVertical="true"
+        android:scaleType="centerCrop"
+        android:layout_gravity="center_horizontal"
+        android:visibility="gone"
+        >
+
+
+    </ImageView>
+
 
     <ImageButton
+        android:layout_centerInParent="true"
+        android:paddingTop="?attr/actionBarSize"
         android:id="@+id/startQRScannerButton"
-        android:layout_width="128dp"
-        android:layout_height="128dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
-
+        android:layout_centerVertical="true"
         android:layout_gravity="center_horizontal"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="4dp"
+        android:background="@android:color/transparent"
         android:backgroundTint="@color/design_default_color_background"
         android:cropToPadding="true"
         android:onClick="openQRScanner"
-        android:scaleType="fitCenter"
-        android:src="@drawable/qr_code_scan_icon_3"
-        android:layout_below="@+id/eastSongLogo"
+        android:scaleType="centerCrop"
+        android:src="@drawable/app_1st_page__v11_bejan_februar_2020"
+
 
         />
 
@@ -61,10 +70,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Version"
+        android:textColor="@color/background"
         android:layout_alignParentBottom="true"
-        android:layout_marginLeft="4dp"
+        android:layout_marginLeft="6dp"
         android:layout_marginBottom="4dp"
         android:onClick="showVersionInfo"
+        />
+
+    <TextView
+        android:id="@+id/privacyPolicy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="隐私政策"
+        android:textColor="@color/background"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginRight="6dp"
+        android:layout_marginBottom="4dp"
+        android:onClick="showPrivacyPolicy"
         />
 
 </RelativeLayout>

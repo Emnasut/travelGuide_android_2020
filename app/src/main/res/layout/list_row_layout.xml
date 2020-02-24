@@ -18,21 +18,23 @@
     <!-- textcolor old: #247986 -->
 
     <TextView
-        android:id="@+id/reporter"
+        android:id="@+id/distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/title"
         android:layout_marginTop="5dip"
         android:text="Distance"
-        android:textColor="#343434"
+        android:textColor="#584e49"
         android:textSize="12sp" />
 
+    <!-- 343434 km color old-->
+
     <TextView
-        android:id="@+id/date"
+        android:id="@+id/location_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/reporter"
-        android:layout_alignBottom="@+id/reporter"
+        android:layout_alignBaseline="@+id/distance"
+        android:layout_alignBottom="@+id/distance"
         android:layout_alignParentRight="true"
         android:text="Type"
         android:textColor="#343434"

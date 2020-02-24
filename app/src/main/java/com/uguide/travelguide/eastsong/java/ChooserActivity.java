@@ -17,23 +17,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.uguide.travelguide.eastsong.BuildConfig;
-import com.uguide.travelguide.eastsong.R;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import androidx.core.content.ContextCompat;
+
+import com.uguide.travelguide.eastsong.BuildConfig;
+import com.uguide.travelguide.eastsong.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class ChooserActivity extends AppCompatActivity
     implements OnRequestPermissionsResultCallback {
@@ -50,7 +51,7 @@ public final class ChooserActivity extends AppCompatActivity
 
 
 
-    Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+    Toolbar myToolbar = findViewById(R.id.toolbar);
     setSupportActionBar(myToolbar);
 
       ((TextView)findViewById(R.id.versionInfo)).setText("v" + BuildConfig.VERSION_CODE);
@@ -125,10 +126,7 @@ public final class ChooserActivity extends AppCompatActivity
         if (requestCode == SCAN_QR_CODE) {
             // Make sure the request was successful
             if (resultCode == RESULT_OK) {
-                // The user picked a contact.
-                // The Intent's data Uri identifies which contact was selected.
-
-                // Do something with the contact here (bigger example below)
+                //TODO: not needed anymore?
             } else if (resultCode == LivePreviewActivity.CODE_NOT_FOUND) {
                 Toast.makeText(this, "This QR Code was not recognized.", Toast.LENGTH_LONG).show();
             }
@@ -138,4 +136,9 @@ public final class ChooserActivity extends AppCompatActivity
   public void showVersionInfo(View view) {
     Toast.makeText(this, "Version " + BuildConfig.VERSION_CODE + " (" + BuildConfig.VERSION_NAME + ")", Toast.LENGTH_SHORT).show();
   }
+
+    public void showPrivacyPolicy(View view) {
+      final Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse("https://u-guide.me/policy.html"));
+      startActivity(intent);
+    }
 }

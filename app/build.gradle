@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
-apply plugin: 'io.fabric'
+apply plugin: 'io.fabric' //this creates "WARNING: API 'variant.getExternalNativeBuildTasks()' is obsolete and has been replaced with 'variant.getExternalNativeBuildProviders()'."
+
 
 
 android {
@@ -8,13 +9,13 @@ android {
         applicationId 'com.uguide.travelguide.eastsong'
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 12
-        versionName "0.12 Layout"
+        versionCode 104
+        versionName "1.04 Vlad 2020"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

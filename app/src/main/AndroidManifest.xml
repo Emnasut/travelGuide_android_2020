@@ -22,7 +22,8 @@
             android:name="com.google.firebase.ml.vision.DEPENDENCIES"
             android:value="barcode" />
 
-        <activity android:name=".java.ChooserActivity">
+        <activity android:name=".java.ChooserActivity" android:screenOrientation="portrait">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -33,16 +34,18 @@
             android:name=".java.CityListActivity"
             android:exported="true"
             android:parentActivityName=".java.ChooserActivity"
+            android:screenOrientation="portrait"
 
         />
 
         <activity
             android:name=".java.ItemInformationActivity"
-
+            android:screenOrientation="portrait"
             />
 
         <activity
             android:name=".java.LivePreviewActivity"
+            android:screenOrientation="portrait"
             android:parentActivityName=".java.ChooserActivity"
             android:exported="true"></activity>
     </application>

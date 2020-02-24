@@ -1,22 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">EastSong DigitalTravelGuide</string>
+
+    <string name="app_name">The Travel Guide App《旅游指南 App》</string>
+    <!-- <string name="app_name">旅遊指南混合掃描儀</string> -->
     <string name="picture">Picture</string>
     <string name="help_text">
-      <b>HDR Viewfinder Demo:</b>\n\n
 
-      Tap viewfinder to switch modes.\n\n
-
-      <b>Normal:</b> Standard camera preview\n
-      <b>Split:</b> Manual exposure control\n
-      <b>HDR:</b> Fused HDR viewfinder\n\n
-
-      Swipe up/down in Split/HDR modes to change manual exposure
-      values.\n\n
-
-      The left half of the viewfinder controls exposure time for
-      even-numbered frames, and the right half of the viewfinder
-      controls exposure time for odd-numbered frames
     </string>
 
     <string name="info">Info</string>

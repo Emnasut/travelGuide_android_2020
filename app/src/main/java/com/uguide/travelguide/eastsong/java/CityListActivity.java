@@ -15,6 +15,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -29,13 +36,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 public class CityListActivity extends AppCompatActivity {
 
@@ -104,18 +104,18 @@ public class CityListActivity extends AppCompatActivity {
                 //Toast.makeText(CityListActivity.this, "Selected :" + " " + cityItem, Toast.LENGTH_LONG).show();
 
 
+                if(!cityItem.getLocations().isEmpty()) {
+                    final GeoPoint latLong = cityItem.getLocations().get(0);
 
-                final GeoPoint latLong = cityItem.getLocations().get(0);
+                    final String mapsUrl = "https://www.google.com/maps/dir/?api=1&destination=" + latLong.getLatitude() + "," + latLong.getLongitude();
 
-                final String mapsUrl = "https://www.google.com/maps/dir/?api=1&destination=" + latLong.getLatitude() + "," + latLong.getLongitude();
+                    Log.i(TAG, "Target: " + mapsUrl);
 
-                Log.i(TAG, "Target: " + mapsUrl);
-
-                //final Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(mapsUrl));
-                final Intent intent = new Intent(CityListActivity.this, ItemInformationActivity.class);
-                intent.putExtras(cityItem.toBundle());
-                startActivity(intent);
-
+                    //final Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(mapsUrl));
+                    final Intent intent = new Intent(CityListActivity.this, ItemInformationActivity.class);
+                    intent.putExtras(cityItem.toBundle());
+                    startActivity(intent);
+                }
             }
         });
     }
@@ -206,7 +206,6 @@ public class CityListActivity extends AppCompatActivity {
                                 final String name = document.getString("name");
                                 final String type = document.getString("type");
 
-                                final List<GeoPoint> locations = (List<GeoPoint>) document.get("locations");
 
                                 final CityItem cityItem = new CityItem();
 
@@ -218,20 +217,32 @@ public class CityListActivity extends AppCompatActivity {
 
                                 float minDistance = Float.MAX_VALUE;
 
-                                if(mLastKnownLocation != null) {
-                                    for(GeoPoint p : locations) {
+                                List<GeoPoint> locations = (List<GeoPoint>) document.get("locations");
 
-                                        final float[] distanceResultInMeters = new float[1];
-                                        Location.distanceBetween(p.getLatitude(), p.getLongitude(), mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude(), distanceResultInMeters);
+                                if(locations != null) {
+                                    if(mLastKnownLocation != null) {
+                                        for(GeoPoint p : locations) {
 
-                                        if(distanceResultInMeters[0] < minDistance) {
-                                            minDistance = distanceResultInMeters[0];
-                                            nearestLocation = p;
+                                            final float[] distanceResultInMeters = new float[1];
+                                            Location.distanceBetween(p.getLatitude(), p.getLongitude(), mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude(), distanceResultInMeters);
+
+                                            if(distanceResultInMeters[0] < minDistance) {
+                                                minDistance = distanceResultInMeters[0];
+                                                nearestLocation = p;
+                                            }
+
                                         }
-
+                                        cityItem.setDistance(minDistance);
                                     }
-                                    cityItem.setDistance(minDistance);
+                                } else {
+                                    locations = new ArrayList<>();
+                                    nearestLocation = null;
                                 }
+
+                                if(cityItem.getDistance() == Float.MAX_VALUE) {
+                                    cityItem.setDistance(0);
+                                }
+
 
 
 
@@ -282,6 +293,10 @@ public class CityListActivity extends AppCompatActivity {
 
                     }
 
+                    if (minDistance == Float.MAX_VALUE) {
+                        minDistance = 0.0f;
+                    }
+
                     ci.setDistance(minDistance);
                     ci.setNearestLocation(nearestLocation);
 
@@ -312,8 +327,8 @@ public class CityListActivity extends AppCompatActivity {
                 convertView = layoutInflater.inflate(R.layout.list_row_layout, null);
                 holder = new ViewHolder();
                 holder.headlineView = (TextView) convertView.findViewById(R.id.title);
-                holder.reporterNameView = (TextView) convertView.findViewById(R.id.reporter);
-                holder.reportedDateView = (TextView) convertView.findViewById(R.id.date);
+                holder.distance = (TextView) convertView.findViewById(R.id.distance);
+                holder.locationType = (TextView) convertView.findViewById(R.id.location_type);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -322,15 +337,15 @@ public class CityListActivity extends AppCompatActivity {
             holder.headlineView.setText(listData.get(position).getHeadline());
 
             final String distance = KM_FORMAT.format((listData.get(position).getDistance()) / 1000.0) + " km";
-            holder.reporterNameView.setText(distance);
-            holder.reportedDateView.setText(listData.get(position).getType());
+            holder.distance.setText(distance);
+            holder.locationType.setText(listData.get(position).getType());
             return convertView;
         }
 
         class ViewHolder {
             TextView headlineView;
-            TextView reporterNameView;
-            TextView reportedDateView;
+            TextView distance;
+            TextView locationType;
         }
 
 

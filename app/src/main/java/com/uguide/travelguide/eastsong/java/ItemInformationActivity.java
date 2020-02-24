@@ -15,6 +15,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
@@ -29,14 +37,6 @@ import com.google.firebase.firestore.GeoPoint;
 import com.uguide.travelguide.eastsong.R;
 
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
 
 public class ItemInformationActivity extends AppCompatActivity {
 
@@ -101,20 +101,20 @@ public class ItemInformationActivity extends AppCompatActivity {
                                     usedBannerUrl = "https://storage.googleapis.com/u-guide-me-imgs/" + document.getId() + "/banner.jpg";
                                 }
 
-                                final Drawable fallbackDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.loading_placeholder, null);
+                                final Drawable fallbackDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.loading_empty_aqua, null);
 
                                 Glide.with(ItemInformationActivity.this)
                                         //.asBitmap()
                                         .load(usedBannerUrl)
                                         .apply(new RequestOptions()
-                                                        .placeholder(R.drawable.loading_placeholder_white)
+                                                        .placeholder(R.drawable.loading_empty_aqua)
                                                         //.centerInside()
 
 //                                                    .centerCrop()
 //                                                    .dontAnimate()
 //                                                    .dontTransform()
                                                         .encodeQuality(100)
-                                                        .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                                                        .diskCacheStrategy(DiskCacheStrategy.NONE) //was RESOURCE
                                         )
                                         .into((ImageView) findViewById(R.id.itemViewBanner))/*.onLoadFailed(fallbackDrawable)*/;
 
@@ -143,15 +143,7 @@ public class ItemInformationActivity extends AppCompatActivity {
                                     cityItem.setLocations(locations);
 
                                     findViewById(R.id.itemViewButtonStartNavigation).setVisibility(View.VISIBLE);
-                                    ((Button)findViewById(R.id.itemViewButtonStartNavigation)).setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-
-                                            navigateToClosestLocation();
-
-
-                                        }
-                                    });
+                                    (findViewById(R.id.itemViewButtonStartNavigation)).setOnClickListener(v -> navigateToClosestLocation());
                                 } else {
                                     findViewById(R.id.itemViewButtonStartNavigation).setVisibility(View.GONE);
                                 }
